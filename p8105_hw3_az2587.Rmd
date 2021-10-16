@@ -166,6 +166,12 @@ brfss %>%
   facet_grid(. ~ year)
 ```
 
+## Problem 3
+
+```{r}
+accel = read_csv("accel_data.csv") %>% 
+  janitor::clean_names()
+```
 
 
 
