@@ -170,8 +170,49 @@ brfss %>%
 
 ```{r}
 accel = read_csv("accel_data.csv") %>% 
-  janitor::clean_names()
+  janitor::clean_names() %>% 
+  mutate(weekday_vs_weekend = recode(day, 
+                                     `Saturday` = "weekend",
+                                     `Sunday` = "weekend",
+                                     `Monday` = "weekday",
+                                     `Tuesday` = "weekday",
+                                     `Wednesday` = "weekday",
+                                     `Thursday` = "weekday",
+                                     `Friday` = "weekday")) %>% 
+  select(day_id, week, day, weekday_vs_weekend, everything()) %>% 
+  pivot_longer(
+    activity_1 : activity_1440,
+    names_to = "activity",
+    names_prefix = "activity_",
+    values_to = "activity_count"
+  ) %>% 
+  rename(minute = activity) %>% 
+  mutate(minute = as.numeric(minute))
 ```
+
+Aggregate across minutes to create a total activity variable for each day, and create a table showing these totals:
+```{r}
+accel %>% 
+  group_by(day_id, week, day) %>% 
+  summarize(total = sum(activity_count)) %>% 
+  knitr::kable()
+```
+
+Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week:
+```{r}
+accel %>% 
+  ggplot(aes(x = minute, y = activity_count, color = day)) + 
+  geom_line() +
+  labs(
+    title = "24h activity",
+    x = "Time",
+    y = "Activity Count"
+  ) +
+  scale_x_continuous(breaks = c(0, 240, 480, 720, 960, 1200, 1440), 
+                   labels = c("12am", "4am", "8am", "12pm", "4pm", "8pm", "12am"),
+                   limits = c(0, 1440))
+```
+
 
 
 
