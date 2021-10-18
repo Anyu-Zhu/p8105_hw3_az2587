@@ -36,7 +36,7 @@ instacart %>%
 ```
 There are **`r nrow(instacart)`** observations and **`r ncol(instacart)`** variables in the instacart dataset. The variables are `r colnames(instacart)`. There are **`r max(pull(instacart, department_id))`** departments(including alcohol, bakery, beverages etc.). Among all variables, `r colnames(instacart[,c(1:5, 7:10, 12:13)])` are integers while the others are characters. 
 
-Below are some specific questions related to the dataset：\\
+Below are some specific questions related to the dataset：\
 How many aisles are there, and which aisles are the most items ordered from?
 ```{r}
 aisle_ids = instacart %>% 
@@ -69,6 +69,7 @@ instacart %>%
         legend.text = element_text(size = 6)) + 
   coord_flip()
 ```
+
 The x axis of the plot denotes the number of orders while the y axis denotes the corresponding aisle. Colors of the bars differ in department. We can see that fresh vegetables are ordered the most frequently and butter is ordered the least of times. The quantity of orders of fresh products and dairy eggs are more than other kinds of products. 
 
 Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
@@ -162,6 +163,7 @@ excellent_df %>%
        x = "Year",
        y = "Average value")
 ```
+
 The plot shows the changes of average values of each state over time. The values drop slightly overall. 
 
 Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.
@@ -172,11 +174,15 @@ brfss %>%
          state == "NY")%>% 
   ggplot(aes(x = response, y = data_value)) +
   geom_boxplot() +
+  labs(title = "Distribution of data values in NY (2006 and 2010)")
   facet_grid(. ~ year)
 ```
 
+The two-panel box-plot shows the distribution of data-value in 2006 and 2010. We can see that people who responded "Very good" tend to have higher data values in both years and those who responded "Poor" tend to have lower data values in both years. The distribution of data values according to responses are similar in 2006 and 2010.
+
 ## Problem 3
 
+Data preparation: 
 ```{r}
 accel = read_csv("accel_data.csv") %>% 
   janitor::clean_names() %>% 
@@ -197,7 +203,10 @@ accel = read_csv("accel_data.csv") %>%
   ) %>% 
   rename(minute = activity) %>% 
   mutate(minute = as.numeric(minute))
+
+accel
 ```
+The resulting dataset contains **`r nrow(accel)`** observations and **`r ncol(accel)`** variables. The variables are `r colnames(accel)`.
 
 Aggregate across minutes to create a total activity variable for each day, and create a table showing these totals:
 ```{r}
@@ -206,12 +215,13 @@ accel %>%
   summarize(total = sum(activity_count)) %>% 
   knitr::kable()
 ```
+The table shows that in week four and five, total activity drops significantly on Saturdays and Sundays.
 
 Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week:
 ```{r}
 accel %>% 
   ggplot(aes(x = minute, y = activity_count, color = day)) + 
-  geom_line() +
+  geom_line(alpha = 0.6) +
   labs(
     title = "24h activity",
     x = "Time",
@@ -221,6 +231,8 @@ accel %>%
                    labels = c("12am", "4am", "8am", "12pm", "4pm", "8pm", "12am"),
                    limits = c(0, 1440))
 ```
+
+The plot shows that on Friday evenings (after 8pm) the activity count tends to be higher; activity counts in all days tend to be lower from mid-night to early morning; activity counts tend to be lower on Wednesdays except for some outliers; On Sundays, activity counts tend to increase at noon (around 12pm).
 
 
 
