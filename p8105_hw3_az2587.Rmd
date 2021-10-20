@@ -75,11 +75,11 @@ The x axis of the plot denotes the number of orders while the y axis denotes the
 Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
 ```{r}
 instacart %>% 
-  filter(aisle == c("baking ingredients", "dog food care","packaged vegetables fruits")) %>% 
+  filter(aisle %in% c("baking ingredients", "dog food care","packaged vegetables fruits")) %>% 
   group_by(aisle, product_name) %>% 
   summarize(n_times = n()) %>% 
   mutate(product_rank = min_rank(desc(n_times))) %>% 
-  filter(product_rank == 1) %>% 
+  filter(product_rank < 4) %>% 
   select(-product_rank) %>% 
   knitr::kable()
 ```
